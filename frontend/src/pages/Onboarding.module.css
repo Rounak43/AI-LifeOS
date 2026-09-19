@@ -1,0 +1,121 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 16px;
+  background: var(--bg);
+  overflow-y: auto;
+}
+
+.card {
+  width: 100%;
+  max-width: 460px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+}
+.mark {
+  color: var(--accent);
+}
+
+.title {
+  font-size: 1.4rem;
+  margin: 0;
+}
+.subtitle {
+  margin: -6px 0 4px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.field small {
+  font-size: 0.76rem;
+}
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.shuffle {
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-size: 0.78rem;
+  padding: 0;
+  cursor: pointer;
+}
+
+.days {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.dayChip {
+  flex: 1;
+  min-width: 40px;
+  padding: 8px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.dayChip:hover {
+  background: var(--surface-2);
+}
+.dayOn {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.error {
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+  color: var(--danger);
+  border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 0.85rem;
+}
+
+.submit {
+  margin-top: 4px;
+  padding: 12px;
+  font-size: 0.95rem;
+}
+
+.footer {
+  margin: 4px 0 0;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-subtle);
+}
+.link {
+  border: none;
+  background: none;
+  color: var(--accent);
+  padding: 0;
+  font-size: 0.8rem;
+  cursor: pointer;
+}

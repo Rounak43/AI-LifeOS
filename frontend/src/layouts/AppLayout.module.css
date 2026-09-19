@@ -1,0 +1,224 @@
+.shell {
+  min-height: 100vh;
+}
+
+/* Floating, curved top bar ------------------------------------------------- */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  padding: 14px 16px 0;
+  pointer-events: none; /* let clicks pass except on the bar itself */
+}
+.barWrap {
+  position: relative;
+  width: 100%;
+  max-width: 760px;
+  pointer-events: auto;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 12px 9px 16px;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  backdrop-filter: saturate(180%) blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  box-shadow: var(--shadow-lg);
+  transition: border-radius 0.2s ease, transform 0.18s ease;
+}
+.barOpen {
+  border-radius: var(--radius-lg);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  padding: 4px 8px;
+  border-radius: 999px;
+  transition: transform 0.16s ease, background 0.16s ease;
+}
+.brand:hover {
+  transform: scale(1.05);
+  background: var(--surface-2);
+}
+.brandName {
+  font-weight: 730;
+  letter-spacing: -0.02em;
+  font-size: 1.02rem;
+}
+.chevron {
+  color: var(--text-subtle);
+  font-size: 0.9rem;
+  transition: transform 0.2s ease;
+  transform: translateY(-2px);
+}
+.chevronUp {
+  transform: rotate(180deg) translateY(-2px);
+}
+
+.barRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-right: 4px;
+}
+.currentPage {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 550;
+}
+.avatarLink {
+  display: inline-flex;
+  border-radius: 12px;
+  transition: transform 0.14s ease;
+}
+.avatarLink:hover {
+  transform: scale(1.08);
+}
+
+/* Dropdown menu below the bar --------------------------------------------- */
+.menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(560px, calc(100vw - 32px));
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 12px;
+  animation: menuIn 0.16s ease;
+}
+@keyframes menuIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.menuGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+}
+.item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  font-weight: 520;
+  text-decoration: none;
+}
+.item:hover {
+  background: var(--surface-2);
+  color: var(--text);
+  text-decoration: none;
+}
+.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.itemIcon {
+  width: 20px;
+  text-align: center;
+  opacity: 0.85;
+}
+.itemLabel {
+  flex: 1;
+}
+.soon {
+  opacity: 0.5;
+  cursor: default;
+}
+.soon:hover {
+  background: transparent;
+  color: var(--text-muted);
+}
+.soonTag {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-subtle);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1px 5px;
+}
+
+.menuFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.footUser {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+.footName {
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.signout {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  padding: 7px 12px;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+.signout:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+/* Content ------------------------------------------------------------------ */
+.main {
+  min-width: 0;
+}
+.content {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 28px 24px 72px;
+}
+
+@media (max-width: 560px) {
+  .brandName {
+    display: none;
+  }
+  .currentPage {
+    display: none;
+  }
+  .menuGrid {
+    grid-template-columns: 1fr;
+  }
+  .content {
+    padding: 22px 16px 64px;
+  }
+}

@@ -1,0 +1,40 @@
+rules_version = '2';
+
+// AI LifeOS — Firestore Security Rules
+//
+// Core principle (see DATA-MODEL.md §Security): a user may ONLY ever access
+// their own subtree, users/{uid}/**. Everything else is denied by default.
+//
+// Trusted / cross-record / validation-heavy writes go through the Express API using
+// the Admin SDK, which BYPASSES these rules. So these rules protect the direct
+// client<->Firestore path used for simple per-user CRUD.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Is the caller signed in and acting on their own subtree?
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    match /users/{uid} {
+      // The user document itself (profile + settings).
+      allow read: if isOwner(uid);
+
+      // On create, the doc must belong to the caller. On update, keep it owner-only.
+      allow create, update: if isOwner(uid);
+      // Deleting the account/profile goes through a trusted server flow, not the client.
+      allow delete: if false;
+
+      // Everything beneath the user is private to that user.
+      match /{document=**} {
+        allow read, write: if isOwner(uid);
+      }
+    }
+
+    // Deny everything not explicitly matched above.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

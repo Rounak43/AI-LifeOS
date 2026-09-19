@@ -1,0 +1,14 @@
+{
+  "indexes": [
+    {
+      "__comment": "Today's tasks by state — dashboard. Added ahead of Phase 2.",
+      "collectionGroup": "tasks",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "localDate", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

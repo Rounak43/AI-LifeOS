@@ -1,0 +1,38 @@
+.head { margin-bottom: 20px; }
+.title { font-size: 1.6rem; letter-spacing: -0.02em; margin-bottom: 2px; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+  align-items: start;
+}
+.cardTitle { font-size: 1.05rem; margin-bottom: 14px; }
+
+.row { display: flex; gap: 10px; }
+.f { display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px; }
+.big { font-weight: 650; margin: 4px 0 12px; }
+
+.stars { display: flex; gap: 4px; }
+.star { border: none; background: none; font-size: 1.4rem; color: var(--border); line-height: 1; }
+.starOn { color: #eab308; }
+
+.moods { display: flex; gap: 6px; margin-bottom: 12px; }
+.moodBtn {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 8px 4px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface);
+}
+.moodBtn:hover { background: var(--surface-2); }
+.moodOn { border-color: var(--accent); background: var(--accent-soft); }
+.moodEmoji { font-size: 1.3rem; }
+.moodLabel { font-size: 0.68rem; color: var(--text-muted); }
+
+.workoutForm { display: flex; gap: 8px; margin-bottom: 12px; }
+.min { width: 80px; flex: 0 0 auto; }
+.woList { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.woList li { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
+.woList li span:first-child { flex: 1; font-weight: 500; }
+.woDel { border: none; background: none; color: var(--text-muted); }
+
+.actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+.ok { color: var(--ok); font-size: 0.82rem; }
