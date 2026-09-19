@@ -28,7 +28,9 @@
 .moodLabel { font-size: 0.68rem; color: var(--text-muted); }
 
 .workoutForm { display: flex; gap: 8px; margin-bottom: 12px; }
-.min { width: 80px; flex: 0 0 auto; }
+.woType { flex: 1 1 auto; min-width: 0; }
+.min { flex: 0 0 76px; width: 76px; text-align: center; }
+.woAdd { flex: 0 0 auto; }
 .woList { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .woList li { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
 .woList li span:first-child { flex: 1; font-weight: 500; }

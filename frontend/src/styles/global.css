@@ -279,9 +279,31 @@ textarea {
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 20px;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.25s ease,
+    transform 0.25s ease;
 }
 
 .muted {
   color: var(--text-muted);
+}
+
+/* Ambient motion — subtle, professional. Disabled for reduced-motion users. */
+.logoDot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: logoPulse 3.2s ease-in-out infinite;
+}
+@keyframes logoPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.75; transform: scale(0.82); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }

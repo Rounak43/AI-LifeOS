@@ -2,9 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import styles from './TimePicker.module.css';
 
 /**
- * Alarm-style time picker. Shows a friendly trigger; clicking opens a popover with
- * scrollable Hour / Minute / AM·PM columns (like a phone alarm). Stores and emits a
- * 24-hour "HH:MM" string so the rest of the app stays consistent.
+ * Alarm-style time picker with up/down steppers (no scrollbars). Numbers roll up and
+ * down via the chevrons; stores/emits a 24-hour "HH:MM" string.
  */
 const pad = (n) => String(n).padStart(2, '0');
 
@@ -13,15 +12,11 @@ function parse(value) {
   const [H, M] = value.split(':').map(Number);
   return { h12: ((H + 11) % 12) + 1, min: M, ampm: H < 12 ? 'AM' : 'PM' };
 }
-
 function to24(h12, min, ampm) {
   let H = h12 % 12;
   if (ampm === 'PM') H += 12;
   return `${pad(H)}:${pad(min)}`;
 }
-
-const HOURS = Array.from({ length: 12 }, (_, i) => i + 1);
-const MINUTES = Array.from({ length: 60 }, (_, i) => i);
 
 export default function TimePicker({ value, onChange, placeholder = 'Pick time', ariaLabel }) {
   const [open, setOpen] = useState(false);
@@ -48,17 +43,13 @@ export default function TimePicker({ value, onChange, placeholder = 'Pick time',
     };
   }, [open]);
 
-  function pick(part, val) {
-    const next = { ...draft, [part]: val };
+  const commit = (next) => {
     setDraft(next);
     onChange(to24(next.h12, next.min, next.ampm));
-  }
-
-  function commitAndClose() {
-    // Commit whatever is shown (covers the "defaults are fine, just hit Done" path).
-    onChange(to24(draft.h12, draft.min, draft.ampm));
-    setOpen(false);
-  }
+  };
+  const stepHour = (d) => commit({ ...draft, h12: ((draft.h12 - 1 + d + 12) % 12) + 1 });
+  const stepMin = (d) => commit({ ...draft, min: (draft.min + d + 60) % 60 });
+  const setAmpm = (a) => commit({ ...draft, ampm: a });
 
   return (
     <div className={styles.wrap} ref={wrapRef}>
@@ -74,24 +65,31 @@ export default function TimePicker({ value, onChange, placeholder = 'Pick time',
 
       {open && (
         <div className={styles.pop}>
-          <div className={styles.cols}>
-            <Column items={HOURS} selected={draft.h12} format={(h) => h} onPick={(v) => pick('h12', v)} />
+          <div className={styles.steppers}>
+            <Stepper display={pad(draft.h12)} onUp={() => stepHour(1)} onDown={() => stepHour(-1)} label="hour" />
             <span className={styles.colon}>:</span>
-            <Column items={MINUTES} selected={draft.min} format={pad} onPick={(v) => pick('min', v)} />
+            <Stepper display={pad(draft.min)} onUp={() => stepMin(1)} onDown={() => stepMin(-1)} label="minute" />
             <div className={styles.ampm}>
               {['AM', 'PM'].map((a) => (
                 <button
                   key={a}
                   type="button"
                   className={`${styles.ampmBtn} ${draft.ampm === a ? styles.sel : ''}`}
-                  onClick={() => pick('ampm', a)}
+                  onClick={() => setAmpm(a)}
                 >
                   {a}
                 </button>
               ))}
             </div>
           </div>
-          <button type="button" className={`btn ${styles.done}`} onClick={commitAndClose}>
+          <button
+            type="button"
+            className={`btn ${styles.done}`}
+            onClick={() => {
+              onChange(to24(draft.h12, draft.min, draft.ampm));
+              setOpen(false);
+            }}
+          >
             Done
           </button>
         </div>
@@ -100,26 +98,27 @@ export default function TimePicker({ value, onChange, placeholder = 'Pick time',
   );
 }
 
-function Column({ items, selected, format, onPick }) {
-  const ref = useRef(null);
-  const selRef = useRef(null);
-  useEffect(() => {
-    if (selRef.current) selRef.current.scrollIntoView({ block: 'center' });
-  }, []);
+function Stepper({ display, onUp, onDown, label }) {
   return (
-    <div className={styles.col} ref={ref}>
-      {items.map((it) => (
-        <button
-          key={it}
-          type="button"
-          ref={it === selected ? selRef : null}
-          className={`${styles.cell} ${it === selected ? styles.sel : ''}`}
-          onClick={() => onPick(it)}
-        >
-          {format(it)}
-        </button>
-      ))}
+    <div className={styles.col}>
+      <button type="button" className={styles.arrow} onClick={onUp} aria-label={`increase ${label}`}>
+        <Chevron up />
+      </button>
+      <div className={styles.value} key={display}>
+        {display}
+      </div>
+      <button type="button" className={styles.arrow} onClick={onDown} aria-label={`decrease ${label}`}>
+        <Chevron />
+      </button>
     </div>
+  );
+}
+
+function Chevron({ up }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={up ? undefined : { transform: 'rotate(180deg)' }}>
+      <path d="M6 15l6-6 6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }
 

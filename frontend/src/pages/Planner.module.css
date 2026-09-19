@@ -19,10 +19,14 @@
   flex-wrap: wrap;
 }
 .grow {
-  flex: 1 1 200px;
+  flex: 1 1 220px;
 }
-.form .input {
+.form :global(.input) {
   width: auto;
+  min-width: 120px;
+}
+.form :global(.input):not(.grow) {
+  flex: 0 1 auto;
 }
 .dash {
   color: var(--text-subtle);
@@ -200,8 +204,9 @@
   flex-wrap: wrap;
   align-items: center;
 }
-.editRow .input {
+.editRow :global(.input) {
   width: auto;
+  min-width: 110px;
 }
 .editRow .grow {
   flex: 1 1 160px;

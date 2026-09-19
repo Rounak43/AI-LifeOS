@@ -8,6 +8,7 @@ import { computeDay } from '../features/scoring/computeDay.js';
 import { sortBlocks } from '../features/planner/plannerApi.js';
 import { DEFAULT_REST_DAYS } from '../features/profile/goals.js';
 import { greeting, formatLongDate, formatMinutes, localWeekdayIndex } from '../utils/time.js';
+import { useCountUp } from '../hooks/useCountUp.js';
 import styles from './Dashboard.module.css';
 
 /**
@@ -174,10 +175,15 @@ function ScorePill({ score, hasData, restDay }) {
       </div>
     );
   }
+  return <AnimatedScore score={hasData && score != null ? score : null} />;
+}
+
+function AnimatedScore({ score }) {
+  const display = useCountUp(score);
   return (
     <div className={styles.scorePill} title="App-defined indicator, not authoritative.">
       <span className={styles.scoreLabel}>Today’s score</span>
-      <span className={styles.scoreValue}>{hasData && score != null ? score : '—'}</span>
+      <span className={styles.scoreValue}>{score == null ? '—' : display}</span>
     </div>
   );
 }

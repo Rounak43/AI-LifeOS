@@ -31,8 +31,8 @@ export function LogoMark({ size = 32 }) {
         strokeLinecap="round"
       />
       <path d="M33 12.6 L33.4 18.2 L28 17.2 Z" fill="#ffffff" />
-      {/* Today dot */}
-      <circle cx="24" cy="24" r="4.4" fill="#ffffff" />
+      {/* Today dot — gently pulses (ambient life) */}
+      <circle cx="24" cy="24" r="4.4" fill="#ffffff" className="logoDot" />
     </svg>
   );
 }

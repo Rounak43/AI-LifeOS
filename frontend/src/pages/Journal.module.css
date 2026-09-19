@@ -12,7 +12,7 @@
 }
 .lockIcon { font-size: 2rem; }
 .lockTitle { margin: 0; font-size: 1.2rem; }
-.lockCard .input { text-align: center; }
+.lockCard :global(.input) { text-align: center; }
 
 .error {
   color: var(--danger);

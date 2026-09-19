@@ -149,7 +149,7 @@ function WorkoutCard({ today, workouts }) {
     <div className="card">
       <h2 className={styles.cardTitle}>🏋 Workout</h2>
       <form className={styles.workoutForm} onSubmit={add}>
-        <select className="input" value={type} onChange={(e) => setType(e.target.value)}>
+        <select className={`input ${styles.woType}`} value={type} onChange={(e) => setType(e.target.value)}>
           {WORKOUT_TYPES.map((t) => (
             <option key={t} value={t}>
               {t}
@@ -164,7 +164,7 @@ function WorkoutCard({ today, workouts }) {
           value={duration}
           onChange={(e) => setDuration(e.target.value)}
         />
-        <button className="btn" disabled={!duration}>
+        <button className={`btn ${styles.woAdd}`} disabled={!duration}>
           Add
         </button>
       </form>
