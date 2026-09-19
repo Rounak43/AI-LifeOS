@@ -11,6 +11,7 @@ import Wellbeing from './pages/Wellbeing.jsx';
 import Journal from './pages/Journal.jsx';
 import Calendar from './pages/Calendar.jsx';
 import Analytics from './pages/Analytics.jsx';
+import Timeline from './pages/Timeline.jsx';
 import Settings from './pages/Settings.jsx';
 import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
@@ -62,6 +63,7 @@ export default function App() {
             <Route path="/journal" element={<Journal />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/timeline" element={<Timeline />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
 

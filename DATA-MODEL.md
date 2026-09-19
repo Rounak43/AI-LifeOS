@@ -54,7 +54,8 @@ users/{uid}
   moodLogs/{localDate}          # mood, note
   journalEntries/{entryId}      # localDate, type(morning/evening), text (ENCRYPTED)
   screenTimeLogs/{localDate}    # phoneMin, laptopMin, focusMin, idleMin, byCategory{}
-  timelineEvents/{eventId}      # ts, localDate, icon, type, title, source, meta
+  timelineEvents/{eventId}      # NOT IMPLEMENTED — the Life Timeline is derived on read
+                                # from the collections above (see docs/adr/0002)
 
   aiInteractions/{interactionId}# prompt summary, model, tokens, timestamp
   aiRecommendations/{recId}     # text, type, status(new/accepted/dismissed), createdAt
@@ -150,7 +151,8 @@ cross-record and validation-heavy writes live.
 
 - `tasks` by `localDate` (asc) + `status` — "today's tasks by state" on the dashboard.
 - `tasks` by `dueDate` — upcoming/overdue.
-- `timelineEvents` by `localDate` + `ts` — the Life Timeline (Phase 6).
+- ~~`timelineEvents` by `localDate` + `ts`~~ — not needed; the Life Timeline derives from the
+  existing collections using single-field `localDate` ranges (ADR 0002).
 - `aiRecommendations` by `status` + `createdAt` — surfacing new suggestions (Phase 5).
 
 Add composite indexes as the queries land; Firestore will tell you which are missing.

@@ -27,7 +27,7 @@ AI LifeOS is a personal productivity + digital-wellbeing web app built around th
 
 ---
 
-## ✅ DONE (Phases 1–4 + extras)
+## ✅ DONE (Phases 1–4, 6 + extras)
 
 - **Phase 1 — Foundation:** Firebase Auth (email/Google), Firestore + Security Rules, user
   profile, timezone utilities, dashboard shell.
@@ -47,6 +47,9 @@ AI LifeOS is a personal productivity + digital-wellbeing web app built around th
   real end-to-end AES-GCM encryption** (passphrase-derived key), Calendar (month view + events).
 - **Phase 4 — Analytics:** 7/30/90-day trends, stat tiles, dependency-free SVG charts
   (client-side aggregation).
+- **Phase 6 — Life Timeline:** one chronological story of a day/week/month, derived on read
+  from every existing source; search + kind filters; untimed items honestly grouped under
+  "Anytime"; journal entries shown as sealed markers (never decrypted there).
 
 ---
 
@@ -71,10 +74,12 @@ free, no card). Build:
 - [ ] **Requires standing up the Express backend** (AI orchestration + secrets must not be in
       the frontend) — needs a Firebase Admin service-account key + a host (Railway/Render).
 
-### Phase 6 — Life Timeline (fully buildable now)
-- [ ] Auto-construct a chronological day view from existing data (tasks, planner captures,
-      habits, sleep, workouts, mood, journal, calendar events).
-- [ ] Search / filter, view a specific date, day/week/month replay.
+### Phase 6 — Life Timeline ✅ DONE
+- [x] Auto-constructed chronological view from existing data (plan blocks, tasks, habits,
+      sleep, workouts, mood, journal markers, calendar events) — **derived on read**, no new
+      collection (see `docs/adr/0002-timeline-derived-not-materialized.md`).
+- [x] Text search, per-kind filter chips, date picker, prev/next, day/week/month replay.
+- [x] Pure builder (`features/timeline/buildTimeline.js`) + 8 unit tests.
 - [ ] (Later, needs AI) "story of the day" + year-in-review.
 
 ### Phase 7 — Digital Wellbeing (manual part buildable now)
@@ -111,20 +116,19 @@ free, no card). Build:
       integration tests for the AI pipeline once it exists.
 - [ ] **ADRs:** update stale `docs/adr/0001-live-scoring-on-client.md` (scoring changed to
       goal-aware; analytics is client-side not nightly snapshots yet); add an ADR for the Journal
-      E2E encryption decision.
+      E2E encryption decision. (ADR 0002 — derived timeline — is written.)
 - [ ] **Repo hygiene:** consider gitignoring the heavy reference material (`documents/`, the
       `.docx` files, the 1.6 MB PNG). Consider renaming the project folder to remove `&`/spaces
       (fixes `npm run`).
-- [ ] **Commit** the latest uncommitted UI/motion work.
 - [ ] Optional: enforce email verification before full access.
 
 ---
 
 ## Suggested order
 
-1. **Commit** current work + tidy `.gitignore`.
-2. **Phase 6 — Life Timeline** (no external deps, high user value, uses data you already have).
-3. **Phase 7 — manual focus timer** (small, self-contained).
+1. ~~**Commit** current work + tidy `.gitignore`.~~ ✅
+2. ~~**Phase 6 — Life Timeline.**~~ ✅
+3. **Phase 7 — manual focus timer** (small, self-contained) ← *next*.
 4. **Stand up the Express backend** (Admin key + host) → unblock **Phase 5 — AI Coach**.
 5. **Phase 8** — deploy, snapshots, FCM, then the mobile app.
 

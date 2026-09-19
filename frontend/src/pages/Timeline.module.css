@@ -1,0 +1,132 @@
+.head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  margin-bottom: 16px; flex-wrap: wrap;
+}
+.title { font-size: 1.6rem; letter-spacing: -0.02em; margin-bottom: 2px; }
+
+.modes { display: flex; gap: 6px; }
+.modeBtn {
+  padding: 7px 14px; border-radius: 999px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text-muted); font-size: 0.85rem; font-weight: 550;
+}
+.modeBtn:hover { background: var(--surface-2); }
+.modeOn { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+
+/* ---- range navigation ---- */
+.nav { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.step {
+  width: 34px; height: 34px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); background: var(--surface);
+  color: var(--text-muted); font-size: 1.1rem; line-height: 1;
+}
+.step:hover:not(:disabled) { background: var(--surface-2); color: var(--text); }
+.step:disabled { opacity: 0.35; cursor: not-allowed; }
+.navMid { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.rangeLabel { font-weight: 600; white-space: nowrap; }
+.dateInput {
+  padding: 6px 10px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); background: var(--surface);
+  color: var(--text-muted); font-size: 0.82rem; font-family: inherit;
+}
+.dateInput::-webkit-calendar-picker-indicator { filter: invert(0.45); cursor: pointer; }
+.todayBtn {
+  padding: 6px 12px; border-radius: 999px; border: 1px solid var(--accent);
+  background: var(--accent-soft); color: var(--accent); font-size: 0.8rem; font-weight: 550;
+}
+
+/* ---- search & kind filters ---- */
+.filters { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+.search { max-width: 340px; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 11px; border-radius: 999px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text-muted); font-size: 0.78rem; font-weight: 500;
+}
+.chip:hover { background: var(--surface-2); }
+.chipOn { background: var(--surface-2); font-weight: 600; }
+.clear {
+  padding: 5px 11px; border: none; background: transparent;
+  color: var(--text-subtle); font-size: 0.78rem; text-decoration: underline;
+}
+.clear:hover { color: var(--text); }
+
+/* ---- the timeline ---- */
+.days { display: flex; flex-direction: column; gap: 26px; }
+.day { display: flex; flex-direction: column; gap: 10px; }
+.dayHead {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+  flex-wrap: wrap; padding-bottom: 6px; border-bottom: 1px solid var(--border);
+}
+.dayTitle { font-size: 1.02rem; letter-spacing: -0.01em; margin: 0; }
+.dayMeta { font-size: 0.78rem; color: var(--text-subtle); }
+
+.track { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.row { display: grid; grid-template-columns: 74px 26px 1fr; align-items: stretch; gap: 10px; }
+
+.when {
+  padding-top: 14px; text-align: right;
+  font-size: 0.78rem; font-variant-numeric: tabular-nums; color: var(--text-muted); white-space: nowrap;
+}
+.anytime { color: var(--text-subtle); font-style: italic; }
+
+/* The connecting spine: a line behind every dot, drawn on the rail column. */
+.rail { position: relative; display: flex; justify-content: center; }
+.rail::before {
+  content: ''; position: absolute; top: 0; bottom: 0; left: 50%;
+  width: 1px; background: var(--border); transform: translateX(-50%);
+}
+.row:first-child .rail::before { top: 18px; }
+.row:last-child .rail::before { bottom: calc(100% - 18px); }
+.dot {
+  position: relative; margin-top: 12px;
+  width: 22px; height: 22px; border-radius: 50%; border: 1px solid transparent;
+  display: grid; place-items: center; flex: 0 0 auto;
+  color: #fff; font-size: 0.62rem; line-height: 1;
+  box-shadow: 0 0 0 3px var(--bg);
+}
+
+.card {
+  margin-bottom: 8px; padding: 10px 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.card:hover { transform: translateX(2px); box-shadow: var(--shadow-lg); }
+.missed { opacity: 0.72; }
+
+.cardTop { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.entryTitle { font-weight: 550; }
+.detail { margin-top: 3px; font-size: 0.8rem; color: var(--text-muted); }
+
+.badge {
+  padding: 2px 8px; border-radius: 999px;
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.01em;
+  border: 1px solid var(--border); color: var(--text-muted); background: var(--surface-2);
+}
+.badgeDone { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 35%, transparent); }
+.badgeMissed { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 35%, transparent); }
+.badgeOpen { color: var(--text-subtle); }
+.key {
+  padding: 2px 8px; border-radius: 999px; font-size: 0.68rem; font-weight: 600;
+  color: var(--accent); background: var(--accent-soft);
+}
+.lock { font-size: 0.72rem; opacity: 0.7; }
+
+.empty { text-align: center; padding: 30px 20px; }
+.emptyIcon { font-size: 1.6rem; margin-bottom: 6px; color: var(--text-subtle); }
+.emptyTitle { font-weight: 600; margin-bottom: 4px; }
+
+.note { margin-top: 20px; font-size: 0.78rem; color: var(--text-subtle); line-height: 1.6; }
+.err { color: var(--danger); }
+
+@media (prefers-reduced-motion: reduce) {
+  .card, .card:hover { transition: none; transform: none; }
+}
+
+@media (max-width: 560px) {
+  .row { grid-template-columns: 58px 22px 1fr; gap: 8px; }
+  .when { font-size: 0.72rem; }
+  .search { max-width: none; }
+  .navMid { flex-wrap: wrap; }
+}

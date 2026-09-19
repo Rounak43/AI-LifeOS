@@ -15,7 +15,7 @@ const NAV = [
   { to: '/journal', label: 'Journal', icon: '✎', ready: true },
   { to: '/calendar', label: 'Calendar', icon: '▦', ready: true },
   { to: '/analytics', label: 'Analytics', icon: '◔', ready: true },
-  { to: '/timeline', label: 'Life Timeline', icon: '⋮', ready: false },
+  { to: '/timeline', label: 'Life Timeline', icon: '⋮', ready: true },
   { to: '/coach', label: 'AI Coach', icon: '✦', ready: false },
   { to: '/settings', label: 'Settings', icon: '⚙', ready: true },
 ];
