@@ -8,6 +8,8 @@ import Planner from './pages/Planner.jsx';
 import Tasks from './pages/Tasks.jsx';
 import Habits from './pages/Habits.jsx';
 import Wellbeing from './pages/Wellbeing.jsx';
+import Focus from './pages/Focus.jsx';
+import Coach from './pages/Coach.jsx';
 import Journal from './pages/Journal.jsx';
 import Calendar from './pages/Calendar.jsx';
 import Analytics from './pages/Analytics.jsx';
@@ -60,10 +62,12 @@ export default function App() {
             <Route path="/tasks" element={<Tasks />} />
             <Route path="/habits" element={<Habits />} />
             <Route path="/wellbeing" element={<Wellbeing />} />
+            <Route path="/focus" element={<Focus />} />
             <Route path="/journal" element={<Journal />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/timeline" element={<Timeline />} />
+            <Route path="/coach" element={<Coach />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
 

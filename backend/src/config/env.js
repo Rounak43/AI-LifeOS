@@ -34,12 +34,38 @@ export const env = {
     privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
   },
 
-  // AI + integrations are wired in later phases; kept here so the surface is discoverable.
+  /**
+   * LLM configuration (Phase 5). The provider is swapped by base URL + key; nothing
+   * above this layer knows which vendor is answering. Keys live ONLY here, server-side.
+   */
   ai: {
     provider: process.env.AI_PROVIDER ?? 'groq',
-    model: process.env.AI_MODEL,
+    model: process.env.AI_MODEL ?? 'openai/gpt-oss-120b',
+    // A smaller, faster model for high-frequency, low-stakes work (NL command parsing).
+    fastModel: process.env.AI_MODEL_FAST ?? 'openai/gpt-oss-20b',
+    timeoutMs: toNumber(process.env.AI_TIMEOUT_MS, 20000),
+    keys: {
+      groq: process.env.GROQ_API_KEY,
+      gemini: process.env.GEMINI_API_KEY,
+      openrouter: process.env.OPENROUTER_API_KEY,
+      mistral: process.env.MISTRAL_API_KEY,
+      cerebras: process.env.CEREBRAS_API_KEY,
+    },
   },
 };
+
+/** True when the configured provider actually has a key — used for graceful degradation. */
+export function isAiConfigured() {
+  return Boolean(env.ai.keys[env.ai.provider]);
+}
+
+export function assertAiConfig() {
+  if (!isAiConfigured()) {
+    throw new Error(
+      `AI provider "${env.ai.provider}" has no API key. Set ${env.ai.provider.toUpperCase()}_API_KEY in backend/.env.`
+    );
+  }
+}
 
 export function assertFirebaseConfig() {
   const { projectId, clientEmail, privateKey } = env.firebase;

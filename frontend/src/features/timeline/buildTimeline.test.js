@@ -94,6 +94,45 @@ test('buildTimeline pulls every source into one chronological day', () => {
   assert.equal(entries.find((e) => e.title === 'Slept 7h').time, '06:30');
 });
 
+test('focus sessions join the timeline at the time they started', () => {
+  const entries = buildTimeline(
+    {
+      focus: [
+        {
+          id: 'f1',
+          localDate: D,
+          label: 'DSA practice',
+          tag: 'productive',
+          actualMin: 25,
+          completed: true,
+          startedAt: new Date('2026-09-18T08:00:00Z'),
+        },
+        {
+          id: 'f2',
+          localDate: D,
+          tag: 'distracting',
+          actualMin: 9,
+          completed: false,
+          startedAt: new Date('2026-09-18T14:30:00Z'),
+        },
+      ],
+    },
+    { timezone: 'UTC', dates: [D] }
+  );
+
+  assert.equal(entries.length, 2);
+  assert.equal(entries[0].time, '08:00');
+  assert.equal(entries[0].title, 'DSA practice · 25m');
+  assert.equal(entries[0].detail, 'Productive');
+
+  // An unlabelled block still reads as something; stopping early is said out loud but
+  // is never recorded as a miss — the minutes genuinely happened.
+  const cutShort = entries[1];
+  assert.equal(cutShort.title, 'Focus session · 9m');
+  assert.equal(cutShort.detail, 'Distracting · stopped early');
+  assert.equal(cutShort.status, 'done');
+});
+
 test('buildTimeline is empty and safe with no data', () => {
   assert.deepEqual(buildTimeline(), []);
   assert.deepEqual(buildTimeline({}, { dates: [D] }), []);

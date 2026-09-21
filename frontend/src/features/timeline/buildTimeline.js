@@ -23,6 +23,7 @@ const keyOf = (ms) => new Date(ms).toISOString().slice(0, 10);
 export const TIMELINE_KINDS = [
   { id: 'plan', label: 'Plan', icon: '▤', color: '#5b5bd6' },
   { id: 'task', label: 'Tasks', icon: '✓', color: '#0ea5e9' },
+  { id: 'focus', label: 'Focus', icon: '◷', color: '#0d9488' },
   { id: 'event', label: 'Calendar', icon: '▦', color: '#e11d54' },
   { id: 'habit', label: 'Habits', icon: '↻', color: '#16a34a' },
   { id: 'workout', label: 'Workout', icon: '◈', color: '#f97316' },
@@ -112,6 +113,9 @@ export function prettyTime(hhmm) {
 
 const MOOD_LABELS = { 1: '😞 Rough', 2: '😕 Meh', 3: '😐 Okay', 4: '🙂 Good', 5: '😄 Great' };
 
+// Copied rather than imported so the builder stays dependency-free and purely about shape.
+const FOCUS_TAG_LABELS = { productive: 'Productive', neutral: 'Neutral', distracting: 'Distracting' };
+
 function entry(e) {
   const meta = kindMeta[e.kind] ?? {};
   return {
@@ -141,6 +145,7 @@ export function buildTimeline(data = {}, opts = {}) {
     workouts = [],
     events = [],
     journal = [],
+    focus = [],
   } = data;
   const { timezone, dates } = opts;
   const allowed = dates?.length ? new Set(dates) : null;
@@ -184,6 +189,23 @@ export function buildTimeline(data = {}, opts = {}) {
           .join(' · ') || null,
       status: done ? 'done' : t.status === 'missed' ? 'missed' : 'open',
       keyStep: t.priority === 'high',
+    });
+  }
+
+  // Focus sessions — self-logged, so they always carry a real start time (Phase 7).
+  for (const f of focus) {
+    push({
+      id: `focus:${f.id}`,
+      date: f.localDate,
+      time: clockOf(f.startedAt, timezone),
+      kind: 'focus',
+      title: `${f.label || 'Focus session'} · ${formatMinutes(f.actualMin)}`,
+      detail:
+        [FOCUS_TAG_LABELS[f.tag] ?? null, f.completed ? null : 'stopped early']
+          .filter(Boolean)
+          .join(' · ') || null,
+      // A block you cut short still happened — it is captured time, not a miss.
+      status: 'done',
     });
   }
 

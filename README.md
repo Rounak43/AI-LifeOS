@@ -20,13 +20,35 @@ improvement. Everything else (habits, sleep, workouts, timeline, AI coach) is ex
 
 ## Status
 
-🚧 **Phase 2 (Core loop) built.** On top of the Phase 1 foundation (Express API +
-React/Vite client, Firebase Auth, Firestore Security Rules, timezone utilities), the MVP
-loop now works: **Daily Planner** with one-tap done/missed capture, **Tasks** CRUD, a live
-**Dashboard** showing Planned vs Actual and a **deterministic productivity score** — all
-computed live from Firestore with real-time updates and deliberate empty states.
-See [SCOPE.md](SCOPE.md), [ADR 0001](docs/adr/0001-live-scoring-on-client.md), and the
-[phases](#development-phases) below.
+🚧 **Phases 1–7 are built** (bar the parts that need a native app or a deploy). On the
+Phase 1 foundation
+(React/Vite client, Firebase Auth, Firestore Security Rules, timezone utilities):
+
+- **Core loop (2)** — Daily Planner with one-tap done/missed capture, Tasks CRUD, a live
+  Dashboard showing Planned vs Actual and a deterministic, goal-aware productivity score.
+- **Lifestyle (3)** — Habits with streaks, Sleep/Mood/Workout logging, a Journal with real
+  end-to-end AES-GCM encryption, and a Calendar.
+- **Analytics (4)** — 7/30/90-day trends and dependency-free SVG charts, aggregated on the
+  client.
+- **Life Timeline (6)** — one chronological story of a day/week/month, *derived on read*
+  from every existing source ([ADR 0002](docs/adr/0002-timeline-derived-not-materialized.md)).
+- **Focus (7, manual half)** — a Pomodoro-style timer that logs tagged focus blocks,
+  self-reported screen time, and break nudges that read your actual plan
+  ([ADR 0003](docs/adr/0003-focus-sessions-are-the-source-of-truth.md)).
+- **AI Coach (5)** — day/week reviews, plan-my-day, behavioural insight and
+  natural-language commands, through a provider-agnostic layer on **Groq**. Metrics are
+  computed in code and handed to the model already done; the model only writes language.
+  Safety rules are enforced twice (in the prompt and again on the output), journal text
+  has no field in the AI boundary schema at all, and nothing is ever applied to your plan
+  without you ([ADR 0004](docs/adr/0004-express-for-ai-only-client-builds-context.md)).
+
+**What's left is Phase 8:** deploying, nightly analytics snapshots, push notifications and
+the mobile app. See [NEXT-STEPS.md](NEXT-STEPS.md) for exactly what remains,
+[SCOPE.md](SCOPE.md) for scope, and the [phases](#development-phases) below.
+
+> The AI Coach needs an API key in `backend/.env` and the Express service running
+> (`cd backend && node src/server.js`). Without either, `/ai/status` reports unavailable
+> and the Coach page says so — every other feature works untouched.
 
 To use the authenticated features you must connect a Firebase project (fill in
 `frontend/.env.local` and `backend/.env`). Without it, the app renders a friendly setup

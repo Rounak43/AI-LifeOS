@@ -53,12 +53,23 @@ users/{uid}
   workoutLogs/{workoutId}       # type, durationMin, localDate, completed, notes
   moodLogs/{localDate}          # mood, note
   journalEntries/{entryId}      # localDate, type(morning/evening), text (ENCRYPTED)
-  screenTimeLogs/{localDate}    # phoneMin, laptopMin, focusMin, idleMin, byCategory{}
+  focusSessions/{sessionId}     # one manual Pomodoro block: localDate, tag, label,
+                                # linkedTaskId, presetId, plannedMin, actualMin,
+                                # startedAt, endedAt, completed  (source of truth)
+  screenTimeLogs/{localDate}    # phoneMin, laptopMin (SELF-REPORTED) + a focus roll-up
+                                # recomputed from focusSessions: focusMin, sessionCount,
+                                # byCategory{}. `idleMin` is NOT implemented — nothing on
+                                # the web can observe it (see docs/adr/0003)
   timelineEvents/{eventId}      # NOT IMPLEMENTED — the Life Timeline is derived on read
                                 # from the collections above (see docs/adr/0002)
 
-  aiInteractions/{interactionId}# prompt summary, model, tokens, timestamp
-  aiRecommendations/{recId}     # text, type, status(new/accepted/dismissed), createdAt
+  aiInteractions/{interactionId}# NOT IMPLEMENTED — the AI server is stateless and keeps
+                                # no log of prompts; `meta` on each recommendation records
+                                # the model that produced it (docs/adr/0004)
+  aiRecommendations/{recId}     # localDate, type(review_day/review_week/plan_day/insight),
+                                # headline, insights[], suggestions[], blocks[],
+                                # status(new/accepted/dismissed), meta{model,provider,
+                                # tokens,filtered}, createdAt, decidedAt
 
   analyticsSnapshots/{localDate}# computed nightly: scores, completion %, trends
   notifications/{notifId}       # type, body, status, scheduledFor, sentAt
@@ -119,6 +130,22 @@ buckets it to a day; `estMinutes` vs `actualMinutes` feeds Planned vs Actual and
 
 `text` is **encrypted before storage** (see PRIVACY.md). Not in v1.
 
+### `focusSessions/{sessionId}` — the only self-measured time
+
+A web app cannot read OS screen time (ARCHITECTURE §4), so wellbeing here is *self-logged*:
+one document per Pomodoro-style block you actually ran. `tag` is one of
+`productive | neutral | distracting` and is **always self-assigned** — the app never infers
+it. `completed: false` means you stopped the timer early; those minutes still count, because
+they still happened.
+
+These are the app's best-timed records — a real `startedAt` and `endedAt` — so the Life
+Timeline places them precisely rather than in its "Anytime" bucket.
+
+`screenTimeLogs/{localDate}` pairs with them: it owns the phone/laptop minutes only you can
+supply, and mirrors the day's focus totals for cheap reads. The mirror is **recomputed from
+the sessions on every write, never incremented**, so it cannot drift. An unanswered field is
+stored as `null`, never `0`. See **ADR 0003** for the full reasoning.
+
 ---
 
 ## Security & integrity intentions
@@ -153,6 +180,9 @@ cross-record and validation-heavy writes live.
 - `tasks` by `dueDate` — upcoming/overdue.
 - ~~`timelineEvents` by `localDate` + `ts`~~ — not needed; the Life Timeline derives from the
   existing collections using single-field `localDate` ranges (ADR 0002).
-- `aiRecommendations` by `status` + `createdAt` — surfacing new suggestions (Phase 5).
+- ~~`focusSessions` by `localDate` + `startedAt`~~ — not needed; the day's sessions are
+  fetched with a single-field `localDate` equality and sorted client-side (ADR 0003).
+- ~~`aiRecommendations` by `status` + `createdAt`~~ — not needed; recommendations are read
+  one day at a time by `localDate` equality and sorted client-side.
 
 Add composite indexes as the queries land; Firestore will tell you which are missing.

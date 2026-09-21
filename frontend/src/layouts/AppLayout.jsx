@@ -12,11 +12,12 @@ const NAV = [
   { to: '/tasks', label: 'Tasks', icon: '✓', ready: true },
   { to: '/habits', label: 'Habits', icon: '↻', ready: true },
   { to: '/wellbeing', label: 'Wellbeing', icon: '❤', ready: true },
+  { to: '/focus', label: 'Focus', icon: '◷', ready: true },
   { to: '/journal', label: 'Journal', icon: '✎', ready: true },
   { to: '/calendar', label: 'Calendar', icon: '▦', ready: true },
   { to: '/analytics', label: 'Analytics', icon: '◔', ready: true },
   { to: '/timeline', label: 'Life Timeline', icon: '⋮', ready: true },
-  { to: '/coach', label: 'AI Coach', icon: '✦', ready: false },
+  { to: '/coach', label: 'AI Coach', icon: '✦', ready: true },
   { to: '/settings', label: 'Settings', icon: '⚙', ready: true },
 ];
 

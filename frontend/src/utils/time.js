@@ -96,3 +96,40 @@ export function formatLongDate(timezone = detectTimezone(), date = new Date()) {
     return date.toDateString();
   }
 }
+
+/** Firestore Timestamp | Date | {seconds} | ms | ISO string → Date, or null if unusable. */
+export function toDateSafe(stamp) {
+  const d =
+    stamp?.toDate?.() ??
+    (stamp instanceof Date
+      ? stamp
+      : Number.isFinite(stamp?.seconds)
+        ? new Date(stamp.seconds * 1000)
+        : typeof stamp === 'number' || typeof stamp === 'string'
+          ? new Date(stamp)
+          : null);
+  return d && !Number.isNaN(d.getTime()) ? d : null;
+}
+
+/**
+ * Minutes since midnight (0–1439) in the user's timezone, or null if the instant is
+ * unusable. Used to compare "now" against plan blocks, which are stored as "HH:MM".
+ */
+export function localMinutesOfDay(timezone = detectTimezone(), stamp = new Date()) {
+  const date = toDateSafe(stamp);
+  if (!date) return null;
+  try {
+    const parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: timezone,
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }).formatToParts(date);
+    const h = Number(parts.find((p) => p.type === 'hour')?.value);
+    const m = Number(parts.find((p) => p.type === 'minute')?.value);
+    if (!Number.isFinite(h) || !Number.isFinite(m)) return null;
+    return (h % 24) * 60 + m;
+  } catch {
+    return date.getHours() * 60 + date.getMinutes();
+  }
+}

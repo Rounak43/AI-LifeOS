@@ -25,7 +25,8 @@ patterns. This document is the promise we make to the user and the rules we hold
 | --- | --- | --- |
 | Profile (name, occupation, timezone) | Low | Firestore, owner-scoped |
 | Tasks, planner blocks, habits | Low–medium | Firestore, owner-scoped |
-| Sleep, workout, screen time | Medium | Firestore, owner-scoped |
+| Sleep, workout | Medium | Firestore, owner-scoped |
+| Focus sessions, screen time | Medium | Firestore, owner-scoped — **self-reported only** |
 | Mood logs | High | Firestore, owner-scoped |
 | **Journal entries** | **Highest** | Firestore, **encrypted before storage** |
 | Attachments, profile picture | Varies | Firebase Cloud Storage, owner-scoped |
@@ -33,6 +34,14 @@ patterns. This document is the promise we make to the user and the rules we hold
 
 All Firestore access is governed by Security Rules that scope every read/write to
 `users/{uid}/**` (see DATA-MODEL §Security).
+
+### Nothing is measured in the background
+
+The Focus page records only blocks you started yourself, and screen-time minutes only if you
+type them in. The app does not read your device's screen time, does not watch which apps or
+tabs you use, and cannot — a web app has no such access (ARCHITECTURE §4). Should a native
+app ever add real OS tracking, it will be **opt-in, per-device, and disclosed at the point
+it is turned on**, never enabled by an update.
 
 ---
 
@@ -65,8 +74,14 @@ This ties directly to Principle 4 and the AI section of the master prompt.
   math on.
 - **Journal and mood text is highly sensitive.** It is **never** routed to any free tier that
   trains on inputs. Specifically:
-  - **Do not** send journal/mood through providers whose free tier trains on your data
-    (e.g. Mistral's free "Experiment" tier).
+  - **Do not** send journal/mood through providers whose free tier trains on your data.
+    Verified as of September 2026: **Google Gemini's free tier trains on submitted content
+    and allows human review**; **Mistral's free "Experiment" tier trains on input**. The
+    paid-terms exception for Gemini applies only in the EEA/Switzerland/UK. **Groq is
+    contractually barred from training on inputs and retains nothing by default** — which
+    is why it is the configured provider. This list lives in code as
+    `TRAINS_ON_FREE_TIER` (`backend/src/services/ai/provider.js`) and the pipeline
+    **refuses** to send consent-gated data to a provider on it.
   - Prefer providers with a **no-training** data policy for any sensitive content.
   - Gate journal/mood use behind **explicit, per-feature consent**.
   - Consider **stripping or summarizing** sensitive text before it is sent, or not sending it
@@ -78,6 +93,24 @@ This ties directly to Principle 4 and the AI section of the master prompt.
 `settings.dataPermissions` records, per data category, whether the AI Coach may use it. The
 AI Coach uses tasks/plans/habits/calendar/sleep/workout/screen-time/analytics/goals by
 permission, and **journal/mood only if explicitly allowed**. Default for journal/mood: **off**.
+
+**As built (Phase 5), this is enforced in code, not just promised:**
+
+- **Journal is not "off by default" — it is impossible.** The AI boundary schema
+  (`backend/src/services/ai/schemas.js`) is `.strict()` and has no journal field of any
+  kind. A request carrying one is rejected with a 400 rather than silently stripped. The
+  client-side builder never reads journal documents at all.
+- **Mood requires `dataPermissions.mood === true`**, is sent as the **1–5 rating only**,
+  and the free-text note a user writes with it never leaves the device — consent or not.
+  The Coach page shows the toggle, off by default, next to a plain statement of what is
+  sent. On a training-tier provider the toggle is disabled outright.
+- **Task notes, descriptions, subtasks and tags are never sent** — only titles, statuses,
+  priorities and estimates.
+- **The context is capped**, not merely "small": 25 tasks, 20 blocks, 15 habits, 31 days,
+  80-character titles. Enforced by the parser on both sides.
+- **The server stores nothing.** It receives a context, returns language, and keeps no
+  copy. Recommendations are written to the user's own Firestore subtree by their own
+  client (docs/adr/0004).
 
 ---
 

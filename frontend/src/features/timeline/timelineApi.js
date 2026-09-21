@@ -22,13 +22,14 @@ async function fetchByDayField(uid, coll, field, start, end) {
 export async function fetchTimelineData(uid, start, end) {
   const byLocalDate = (coll) => fetchByDayField(uid, coll, 'localDate', start, end);
 
-  const [plans, tasks, sleeps, moods, workouts, journal, events, habitsSnap] = await Promise.all([
+  const [plans, tasks, sleeps, moods, workouts, journal, focus, events, habitsSnap] = await Promise.all([
     byLocalDate('dailyPlans'),
     byLocalDate('tasks'),
     byLocalDate('sleepLogs'),
     byLocalDate('moodLogs'),
     byLocalDate('workoutLogs'),
     byLocalDate('journalEntries'),
+    byLocalDate('focusSessions'),
     fetchByDayField(uid, 'calendarEvents', 'date', start, end), // events key off `date`
     getDocs(collection(db, 'users', uid, 'habits')),
   ]);
@@ -40,6 +41,7 @@ export async function fetchTimelineData(uid, start, end) {
     moods,
     workouts,
     journal,
+    focus,
     events,
     habits: habitsSnap.docs.map((d) => ({ id: d.id, ...d.data() })),
   };
